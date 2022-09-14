@@ -16,13 +16,13 @@ import config
 def get_video_title(video_id):
 
     try:
-        r = requests.get(f"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q={video_id}&key={config.api_key}",timeout=2)
+        r = requests.get(f"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q={video_id}&key={config.api_key}",timeout=5)
     except:
         print("Encountered an error with youtube.")
         return "UNKNOWN - Youtube connection porblem"
 
     if r.status_code != 200:
-        return "UNKNOWN - Youtube Error"
+        return f"UNKNOWN - Youtube Error {r.status_code}"
     
     items = r.json()["items"]
     for item in items:
