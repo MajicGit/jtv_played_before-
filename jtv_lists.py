@@ -1,5 +1,8 @@
 import requests
-import json
+import get_video_title
+
+MIN_PLAYS_FOR_LOOKUP = 30 # this is so you don't kill you API quota
+
 videos = {}
 moo_queuers = {}
 print("Querying for videos, this may take a while")
@@ -30,10 +33,15 @@ moo_list = sorted(moo_queuers.items(), key=lambda x:x[1])
 moo_list.reverse()
 print(moo_list)
 print("Got all the videos, saving to file")
-with open("Output.txt","w") as file:
-    file.write("Video ID, Number of times played \n")
+with open("Output.txt","w",encoding="utf-8") as file:
+    file.write("Video ID, Number of times played, Title \n")
     for video_id,num_plays in sorted(videos.items(),key= lambda x:x[1],reverse=True): #Sort videos by number of plays
-        file.write(f"{video_id}, {num_plays} \n")
+        if num_plays > MIN_PLAYS_FOR_LOOKUP:
+            title = get_video_title.get_video_title(video_id)
+        else:
+            title = "Too insignificant to look up."
+        
+        file.write(f'{video_id}, {num_plays}, "{title}" \n')
 
 print("Infinite querying of specific Video IDs:")
 while True:
